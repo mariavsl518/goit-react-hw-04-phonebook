@@ -1,94 +1,116 @@
-import { Component } from "react";
 import { ContactForm } from "./ContactForm/ContactForm";
 import { Filter } from "./Filter/Filter";
 import { ContactList } from "./ContactList/ContactList";
+import { useEffect, useState } from "react";
 
-export class App extends Component {
-    state = {
-      contacts: [],
-      filter: ''
-    }
+export const App =()=> {
 
-    addProfile=(formData)=> {
+    const [contacts, setContacts] = useState([]);
+    const [filter, setFilter] = useState('');
 
-      const duplicateCheck = this.state.contacts.some(contact=>
-        contact.name.toLowerCase()===formData.name.toLowerCase()
+   const addProfile=(name, number)=> {
+
+      const profile={
+        name,
+        number
+      }
+
+      const duplicateCheck = contacts.some(contact=>
+        contact.name.toLowerCase()===profile.name.toLowerCase()
       );
 
       if (duplicateCheck)
-        { alert(`Contact ${formData.name} already exists`)
+        { alert(`Contact ${profile.name} already exists`)
           return} 
-        else
-          { return(
-            this.setState(prevState=> {
-              if(prevState===[])
-              {return{
-                contacts: [formData]
-              }}
-              else
-              {return {
-                contacts: [...prevState.contacts, formData]
-              }}
-             })
-          )
-        }
+
+      setContacts(contacts.concat(profile))
       }
 
+        // useEffect(()=>{
+        //       if(contacts===[]){
+        //         setContacts(finalProfile)
+        //       }
+        //       else{
+        //         setContacts(prevState=>[...prevState.contacts, finalProfile] )
+        //       }
+        //     },[contacts])
 
-    handleFilterSearch=(evt)=>{
 
-      this.setState(
-        {filter: evt.target.value}
-      )
+            // this.setState(prevState=> {
+            //   if(prevState===[])
+            //   {return{
+            //     contacts: [formData]
+            //   }}
+            //   else
+            //   {return {
+            //     contacts: [...prevState.contacts, formData]
+            //   }}
+            //  })
+
+    const handleFilterSearch=(evt)=>{
+  
+      setFilter(evt.target.value)
   }
 
-    deleteContact=(id)=>{
-      this.setState({
-        contacts: this.state.contacts.filter(contact=>
+    const deleteContact=(id)=>{
+      setFilter(
+        contacts.filter(contact=>
           contact.id!==id)
-      })
+      )
     }
-
-    componentDidMount(){
+    
+    useEffect(()=>{
       if(localStorage.getItem('contacts')){
-        const getContacts = JSON.parse(localStorage.getItem('contacts'))
-        this.setState(
-         {contacts: getContacts}
-        )
+        const getContacts = JSON.parse(localStorage.getItem('contacts'));
+        setContacts(getContacts)
       }
-    }
+    }, [])
 
-    componentDidUpdate(prevProps, prevState){
-      if(prevState.contacts!==this.state.contacts){
-        const contacts = JSON.stringify(this.state.contacts)
+    useEffect(()=>{
+      if(){
+        const contacts = JSON.stringify(contacts)
         localStorage.setItem('contacts', contacts)
       }
-    }
+      }, [contacts])
 
-  render() {
+    // componentDidMount(){
+    //   if(localStorage.getItem('contacts')){
+    //     const getContacts = JSON.parse(localStorage.getItem('contacts'))
+    //     this.setState(
+    //      {contacts: getContacts}
+    //     )
+    //   }
+    // }
+
+    // componentDidUpdate(prevProps, prevState){
+    //   if(prevState.contacts!==this.state.contacts){
+    //     const contacts = JSON.stringify(this.state.contacts)
+    //     localStorage.setItem('contacts', contacts)
+    //   }
+    // }
+
 
     const filterParam = 
-    this.state.contacts.filter(contact=>
+    contacts.filter(contact=>
     contact.name.toLowerCase().includes(
-      this.state.filter.trim().toLowerCase())
+      filter.trim().toLowerCase())
     )
 
     return (
       <div className='formBlock'>
         <h1>Phonebook</h1>
         <ContactForm 
-        addProfile={this.addProfile} />
+        addProfile={addProfile} />
 
         <h2>Contacts</h2>
         
         <Filter 
-        handleFilterSearch={this.handleFilterSearch}/>
+        handleFilterSearch={handleFilterSearch}/>
 
         <ContactList 
         contacts={filterParam}
-        deleteContact={this.deleteContact}
+        deleteContact={deleteContact}
         />
       </div>
       )  
     };
-  }

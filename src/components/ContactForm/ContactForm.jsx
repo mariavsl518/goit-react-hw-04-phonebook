@@ -1,30 +1,30 @@
-import React, { Component } from 'react';
-import css from './ContactForm.module.css'
+// import React, { Component } from 'react';
+import css from './ContactForm.module.css';
 import { nanoid } from 'nanoid';
+import { useState } from 'react';
 
-export class ContactForm extends Component {
 
-  handleSubmit=(evt)=>{
+export const ContactForm=({addProfile})=> {
+
+const [name, setName] = useState('');
+const [number, setNumber] = useState('');
+
+  const handleSubmit=(evt)=>{
 
     evt.preventDefault();
-    
-    const name = evt.currentTarget.elements.name.value;
-    const number = evt.currentTarget.elements.number.value;
 
-    const formData = {
-      id: nanoid(),
-      name, 
-      number,
-    }
-    this.props.addProfile(formData);
+    setName(evt.currentTarget.elements.name.value);
+    setNumber(evt.currentTarget.elements.number.value);
+    
+    addProfile(name, number);
+
     evt.currentTarget.reset();
   }
 
-  render(){
     return (
       <form 
       className={css.form}
-      onSubmit={this.handleSubmit}>
+      onSubmit={handleSubmit}>
       <label htmlFor="name" className={css.formLabel}> 
         <span className={css.formLabelHeader}>Name</span>
         <input type="text" name="name" placeholder='Klavdia Petrivna' className={css.formInput} required />
@@ -37,5 +37,4 @@ export class ContactForm extends Component {
       </form>
     )
   }
-}
 
