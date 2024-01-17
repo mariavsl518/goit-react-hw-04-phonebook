@@ -1,21 +1,14 @@
 // import React, { Component } from 'react';
 import css from './ContactForm.module.css';
-import { nanoid } from 'nanoid';
-import { useState } from 'react';
-
 
 export const ContactForm=({addProfile})=> {
-
-const [name, setName] = useState('');
-const [number, setNumber] = useState('');
 
   const handleSubmit=(evt)=>{
 
     evt.preventDefault();
 
-    setName(evt.currentTarget.elements.name.value);
-    setNumber(evt.currentTarget.elements.number.value);
-    
+    const name= evt.currentTarget.elements.name.value;
+    const number = evt.currentTarget.elements.number.value;
     addProfile(name, number);
 
     evt.currentTarget.reset();

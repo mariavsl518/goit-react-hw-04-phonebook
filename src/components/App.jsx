@@ -2,6 +2,7 @@ import { ContactForm } from "./ContactForm/ContactForm";
 import { Filter } from "./Filter/Filter";
 import { ContactList } from "./ContactList/ContactList";
 import { useEffect, useState } from "react";
+import { nanoid } from 'nanoid';
 
 export const App =()=> {
 
@@ -10,54 +11,35 @@ export const App =()=> {
 
    const addProfile=(name, number)=> {
 
-      const profile={
+      const profile = {
+        id: nanoid(),
         name,
         number
       }
-
       const duplicateCheck = contacts.some(contact=>
         contact.name.toLowerCase()===profile.name.toLowerCase()
       );
-
       if (duplicateCheck)
         { alert(`Contact ${profile.name} already exists`)
           return} 
-
-      setContacts(contacts.concat(profile))
+      setContacts(prevState => [...prevState, profile])
       }
 
-        // useEffect(()=>{
-        //       if(contacts===[]){
-        //         setContacts(finalProfile)
-        //       }
-        //       else{
-        //         setContacts(prevState=>[...prevState.contacts, finalProfile] )
-        //       }
-        //     },[contacts])
-
-
-            // this.setState(prevState=> {
-            //   if(prevState===[])
-            //   {return{
-            //     contacts: [formData]
-            //   }}
-            //   else
-            //   {return {
-            //     contacts: [...prevState.contacts, formData]
-            //   }}
-            //  })
-
     const handleFilterSearch=(evt)=>{
-  
       setFilter(evt.target.value)
   }
 
     const deleteContact=(id)=>{
-      setFilter(
+      setContacts(
         contacts.filter(contact=>
           contact.id!==id)
       )
     }
+  
+    useEffect(()=>{
+      const stringifyContacts = JSON.stringify(contacts);
+      localStorage.setItem('contacts', stringifyContacts)
+    }, [contacts])
     
     useEffect(()=>{
       if(localStorage.getItem('contacts')){
@@ -65,30 +47,6 @@ export const App =()=> {
         setContacts(getContacts)
       }
     }, [])
-
-    useEffect(()=>{
-      if(){
-        const contacts = JSON.stringify(contacts)
-        localStorage.setItem('contacts', contacts)
-      }
-      }, [contacts])
-
-    // componentDidMount(){
-    //   if(localStorage.getItem('contacts')){
-    //     const getContacts = JSON.parse(localStorage.getItem('contacts'))
-    //     this.setState(
-    //      {contacts: getContacts}
-    //     )
-    //   }
-    // }
-
-    // componentDidUpdate(prevProps, prevState){
-    //   if(prevState.contacts!==this.state.contacts){
-    //     const contacts = JSON.stringify(this.state.contacts)
-    //     localStorage.setItem('contacts', contacts)
-    //   }
-    // }
-
 
     const filterParam = 
     contacts.filter(contact=>
